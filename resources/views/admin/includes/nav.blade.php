@@ -18,8 +18,9 @@
                 <li class="nav-item" style="font-weight:700">
                     <a class="nav-link active" aria-current="page" href="/admin">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                <li class="nav-item" style="font-weight:700;">
+                    <a class="nav-link text-decoration-none" href="http://localhost:8000/api/projects">Api</a>
+                    
                 </li>
                 <li class="nav-item dropdown" style="font-weight:700">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
