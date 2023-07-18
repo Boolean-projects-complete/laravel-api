@@ -21,7 +21,7 @@ class ProjectController extends Controller
         'author' => 'required|string|max:30',
         'collaborators' => 'nullable|string|max:150',
         'image' => 'nullable|image|max:1024',
-        'description' => 'nullable|string|',
+        'description' => 'nullable|string',
         'link_github' => 'required|string|max:150',
         'technologies. *'   => 'integer|exists:technologies,id',
 
@@ -72,11 +72,14 @@ class ProjectController extends Controller
         $request->validate($this->validations, $this->validations_messages);
 
         $data = $request->all();
+        $image = null;
 
         //salvare l'immagine nella cartella degli uploads
         //prendere il percorso dell'immagine appena salvata
+        if ($request->has('image')) {
+            $image = Storage::put('uploads', $data['image']);
+        }
 
-        $image = Storage::put('uploads', $data['image']);
 
         // salvare i dati nel database insieme al percorso dell'immagine
 
@@ -121,9 +124,11 @@ class ProjectController extends Controller
      */
     public function edit($slug)
     {
+
+        $project = Project::where('slug', $slug)->firstOrFail();
         $types = Type::All();
         $technologies = Technology::All();
-        $project = Project::where('slug', $slug)->firstOrFail();
+
         return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
@@ -136,20 +141,31 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $slug)
     {
-
         $project = Project::where('slug', $slug)->firstOrFail();
 
         //validare i dati del form
-
         $request->validate($this->validations, $this->validations_messages);
-
         $data = $request->all();
+
+
+        // Faccio un controllo per fare in modo che se non viene modificata l'immagine, la vecchia non venga eliminata
+        if ($request->has('image')) {
+            // salvo la nuova immagine
+            $image = Storage::disk('public')->put('uploads', $data['image']);
+
+            // elimino la vecchia immagine
+            if ($project->image) {
+                Storage::delete($project->image);
+            }
+
+            // aggiorno l'indirizzo della nuova immagine
+            $project->image = $image;
+        }
 
         // salvare i dati nel database se validi
 
         $project->type_id = $data['type_id'];
         $project->title = $data['title'];
-
         $project->creation_date = $data['creation_date'];
         $project->last_update = $data['last_update'];
         $project->author = $data['author'];
@@ -161,7 +177,7 @@ class ProjectController extends Controller
 
         $project->technologies()->sync($data['technologies'] ?? []);
 
-        return redirect()->route('admin.projects.index', ['project' => $project->id]);
+        return to_route('admin.projects.index', ['project' => $project]);
     }
 
     /**

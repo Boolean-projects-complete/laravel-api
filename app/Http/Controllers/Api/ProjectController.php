@@ -9,9 +9,12 @@ use App\Models\Technology;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::with('type', 'technologies')->paginate(3);
+        // gestione parametro q (parametro di ricerca)
+        $searchStr = $request->query('q', '');
+
+        $projects = Project::with('type', 'technologies')->where('title', 'LIKE', "%{$searchStr}%")->paginate(3);
 
         return response()->json([
             'success' => true,
