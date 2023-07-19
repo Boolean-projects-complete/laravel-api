@@ -3,7 +3,12 @@
 @section('contents')
 <div class="p-5" style="margin-inline: 10rem">
     <h1>Edit Project</h1>
-    <form method="POST" action="{{ route('admin.projects.update', ['project' => $project])}}" novalidate>
+    <form 
+    method="POST" 
+    action="{{ route('admin.projects.update', ['project' => $project])}}" 
+    enctype="multipart/form-data" 
+    novalidate
+    >
         {{-- Per protezione dati --}}
         @csrf 
         {{-- Per protezione dati --}}
@@ -195,7 +200,9 @@
         </div>
 
         <button class="btn btn-primary" style="font-size: 20px">Save</button>
+
     </form>
+    
 </div>
     
 @endsection

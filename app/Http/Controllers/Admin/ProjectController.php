@@ -20,7 +20,7 @@ class ProjectController extends Controller
         'last_update' => 'required|date|max:20',
         'author' => 'required|string|max:30',
         'collaborators' => 'nullable|string|max:150',
-        'image' => 'nullable|image|max:1024',
+        'image' => 'nullable|image|max:10500',
         'description' => 'nullable|string',
         'link_github' => 'required|string|max:150',
         'technologies. *'   => 'integer|exists:technologies,id',
@@ -149,7 +149,8 @@ class ProjectController extends Controller
 
 
         // Faccio un controllo per fare in modo che se non viene modificata l'immagine, la vecchia non venga eliminata
-        if ($request->has('image')) {
+        if (isset($data['image']))  // ($request->has('image'))// 
+        {
             // salvo la nuova immagine
             $image = Storage::disk('public')->put('uploads', $data['image']);
 
@@ -177,7 +178,7 @@ class ProjectController extends Controller
 
         $project->technologies()->sync($data['technologies'] ?? []);
 
-        return to_route('admin.projects.index', ['project' => $project]);
+        return to_route('admin.projects.show', ['project' => $project]);
     }
 
     /**
