@@ -19,7 +19,7 @@
                     <a class="nav-link active" aria-current="page" href="/admin">Home</a>
                 </li>
                 <li class="nav-item" style="font-weight:700;">
-                    <a class="nav-link text-decoration-none" href="http://localhost:8000/api/projects">Api</a>
+                    <a class="nav-link text-decoration-none" href="">Api</a>
                     
                 </li>
                 <li class="nav-item dropdown" style="font-weight:700">
